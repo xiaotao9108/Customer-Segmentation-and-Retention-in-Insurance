@@ -134,37 +134,30 @@ select distinct term_unit
 from f.term_unit;
 quit;
 
-/*total exposure*/
-/*under policy level*/
-proc sql noprint;
-create table f.expo as
-select sum(term_unit) as expo
-from (select distinct subscription_number, effective_date,expiry_date,term_unit from f.term_unit);
-run; 
 
-/*under vehicle level*/
-proc sql;
-create table f.veh_expo as
-select sum(term_unit) as veh_expo
-from (select distinct subscription_number, vehicle_number, effective_date, expiry_date, term_unit from f.term_unit);
-quit;
-
-
-data uniq_term1 (keep=byvar term_unit);
+data f.uniq_term1 (keep=byvar term_unit);
 set f.term_unit;
 byvar=business_section||subscription_year||subscription_number||vehicle_number;
 run;
 
-proc sort data=uniq_term1;
+proc sort data=f.uniq_term1;
 by byvar;
 run;
 
-data uniq_term1;
-set uniq_term1;
+data f.uniq_term1;
+set f.uniq_term1;
 by byvar;
 if first.byvar then output;
 run;
 
+
+/*total exposure*/
+/*under vehicle level*/
+proc sql;
+create table f.veh_expo as
+select sum(term_unit) as veh_expo
+from f.uniq_term1;
+quit;
 
 
  /***********NUMERIC VALUES SUMMARY ***********/
