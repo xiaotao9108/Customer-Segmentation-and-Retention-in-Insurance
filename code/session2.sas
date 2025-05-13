@@ -146,7 +146,7 @@ run;
 proc sql;
 create table f.veh_expo as
 select sum(term_unit) as veh_expo
-from (select distinct subscription_number, effective_date, expiry_date, vehicle_number, term_unit from f.term_unit);
+from (select distinct subscription_number, vehicle_number, effective_date, expiry_date, term_unit from f.term_unit);
 quit;
 
 
